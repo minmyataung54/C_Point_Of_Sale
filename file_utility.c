@@ -24,8 +24,9 @@ void String_Token_Check()
     }
 }
 
-int POSCompareFunction(const void * a, const void * b) {
-    if(((struct POS*)a)->product_id > ((struct POS*)b)->product_id)
+int POSCompareFunction(const void *a, const void *b)
+{
+    if (((struct POS *)a)->product_id > ((struct POS *)b)->product_id)
         return 1;
     return -1;
 }
@@ -603,7 +604,66 @@ struct Sale Sale_Search(int id) // Fixed By MMA
     return sale;
 }
 
-struct POS *POS_Many_Search_By_Date(struct tm transaction_datetime,int *length)
+struct Product *Product_Retrive(int *length)
+{
+    FILE *fpt;
+    struct POS pos;
+    struct POS *posPtr;
+    struct POS *tempPOSPtr;
+    struct Product pd;
+    struct Product *pdPtr;
+    struct Product *tempPdPtr;
+    *length = 0;
+
+    char ch;
+    fpt = fopen(POS_FILE, "r");
+    if (NULL == fpt)
+    {
+        printf("file can't be opened hote lar\n");
+    }
+    char line[1024];
+    fgets(line, 1024, fpt);
+    while (fgets(line, 1024, fpt))
+    {
+        int foundID = atoi(strtok(line, ","));
+        pd.product_id = foundID;
+        strcpy(pd.product_name, strtok(NULL, ","));
+        pd.product_quantity = atoi(strtok(NULL, ","));
+        pd.product_cost = atof(strtok(NULL, ","));
+        pd.product_price = atof(strtok(NULL, ","));
+        char *tmp = strdup(line);
+
+        *length = *length + 1;
+        if (*length == 1)
+        {
+            pdPtr = (struct Product *)malloc(*length * sizeof(struct Product));
+            pdPtr[*length - 1] = pd;
+            tempPdPtr = (struct Product *)malloc(*length * sizeof(struct Product));
+            tempPdPtr[*length-1] = pd;
+            tempPdPtr[*length - 1] = pd;
+        }
+        else
+        {
+            pdPtr = (struct Product *)malloc(*length * sizeof(struct Product));
+            pdPtr[*length - 1] = pd;
+            for (int i = 0; i < *length - 1; i++)
+            {
+                pdPtr[i] = tempPdPtr[i];
+            }
+            tempPdPtr = (struct Product *)malloc(*length * sizeof(struct Product));
+            // tempPdPtr[*length - 1] = pd;
+            for (int i = 0; i < *length - 1; i++)
+            {
+                tempPdPtr[i] = pdPtr[i];
+            }
+        }
+        free(tmp);
+    }
+    fclose(fpt);
+    return pdPtr;
+}
+
+struct POS *POS_Many_Search_By_Date(struct tm transaction_datetime, int *length)
 {
     FILE *fpt;
     struct POS pos;
@@ -622,7 +682,7 @@ struct POS *POS_Many_Search_By_Date(struct tm transaction_datetime,int *length)
     while (fgets(line, 1024, fpt))
     {
         int foundID = atoi(strtok(line, ","));
-        pos.bill_id = foundID ;
+        pos.bill_id = foundID;
         pos.product_id = atoi(strtok(NULL, ","));
         strcpy(pos.customer_name, strtok(NULL, ","));
         pos.transaction_datetime.tm_sec = atoi(strtok(NULL, ","));
@@ -636,35 +696,36 @@ struct POS *POS_Many_Search_By_Date(struct tm transaction_datetime,int *length)
         pos.product_cost = atof(strtok(NULL, ","));
         char *tmp = strdup(line);
 
-        if ((pos.transaction_datetime.tm_year==transaction_datetime.tm_year)&(pos.transaction_datetime.tm_mon==transaction_datetime.tm_mon)&(pos.transaction_datetime.tm_mday==transaction_datetime.tm_mday))
+        if ((pos.transaction_datetime.tm_year == transaction_datetime.tm_year) & (pos.transaction_datetime.tm_mon == transaction_datetime.tm_mon) & (pos.transaction_datetime.tm_mday == transaction_datetime.tm_mday))
         {
             *length = *length + 1;
-            if(*length==1){
-                posPtr = (struct POS *)malloc(*length*sizeof(struct POS));
-                posPtr[*length-1] = pos;
-                tempPOSPtr = (struct POS *)malloc(*length*sizeof(struct POS));
-                tempPOSPtr[*length-1] = pos;
-            }else
+            if (*length == 1)
             {
-                posPtr = (struct POS *)malloc(*length*sizeof(struct POS));
-                posPtr[*length-1] = pos;
-                for (int i = 0; i < *length-1; i++)
+                posPtr = (struct POS *)malloc(*length * sizeof(struct POS));
+                posPtr[*length - 1] = pos;
+                tempPOSPtr = (struct POS *)malloc(*length * sizeof(struct POS));
+                tempPOSPtr[*length - 1] = pos;
+            }
+            else
+            {
+                posPtr = (struct POS *)malloc(*length * sizeof(struct POS));
+                posPtr[*length - 1] = pos;
+                for (int i = 0; i < *length - 1; i++)
                 {
                     posPtr[i] = tempPOSPtr[i];
                 }
-                tempPOSPtr = (struct POS *)malloc(*length*sizeof(struct POS));
-                tempPOSPtr[*length-1] = pos;
-                for (int i = 0; i < *length-1; i++)
+                tempPOSPtr = (struct POS *)malloc(*length * sizeof(struct POS));
+                tempPOSPtr[*length - 1] = pos;
+                for (int i = 0; i < *length - 1; i++)
                 {
                     tempPOSPtr[i] = posPtr[i];
                 }
-                
             }
         }
         free(tmp);
     }
     fclose(fpt);
-    qsort(posPtr,*length,sizeof(struct POS),POSCompareFunction);
+    qsort(posPtr, *length, sizeof(struct POS), POSCompareFunction);
     return posPtr;
 }
 
@@ -695,5 +756,5 @@ void Display_Product(struct Product pd)
 
 void Display_POS(struct POS pos)
 {
-    printf("Bill ID: %d\nCustomer Name: %s\nTime: %s\nProduct ID: %d\nProduct Quantity: %d\nProduct Price: %lf\nProduct Cost: %lf\n", pos.bill_id, pos.customer_name, asctime(&pos.transaction_datetime),pos.product_id, pos.product_quantity, pos.product_price, pos.product_cost);
+    printf("Bill ID: %d\nCustomer Name: %s\nTime: %s\nProduct ID: %d\nProduct Quantity: %d\nProduct Price: %lf\nProduct Cost: %lf\n", pos.bill_id, pos.customer_name, asctime(&pos.transaction_datetime), pos.product_id, pos.product_quantity, pos.product_price, pos.product_cost);
 }
