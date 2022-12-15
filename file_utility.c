@@ -68,7 +68,7 @@ void Product_initialize()
     if (is_file_exists(PRODUCT_FILE) == 0)
     {
         fpt = file_write_open(PRODUCT_FILE);
-        fprintf(fpt, "Product_ID,Product_Name,Product_Quantity,Product_Cost");
+        fprintf(fpt, "Product_ID,Product_Name,Product_Quantity,Product_Cost,Product_Price");
     }
     fileClose(fpt);
 }
@@ -80,7 +80,7 @@ void POS_initialize()
     if (is_file_exists(POS_FILE) == 0)
     {
         fpt = file_write_open(POS_FILE);
-        fprintf(fpt, "Bill_ID,Customer_Name,Transaction_Datetime_Sec,Transaction_Datetime_Min,Transaction_Datetime_Hour,Transaction_Datetime_Day,Transaction_Datetime_Month,Transaction_Datetime_Year,Product_Quantity,Product_Price,Product_Cost");
+        fprintf(fpt, "Bill_ID,Product_ID,Customer_Name,Transaction_Datetime_Sec,Transaction_Datetime_Min,Transaction_Datetime_Hour,Transaction_Datetime_Day,Transaction_Datetime_Month,Transaction_Datetime_Year,Product_Quantity,Product_Price,Product_Cost");
     }
     fileClose(fpt);
 }
@@ -104,8 +104,8 @@ int new_Product(struct Product pd)
     if (is_file_exists(PRODUCT_FILE) == 0)
     {
         fpt = file_write_open(PRODUCT_FILE);
-        fprintf(fpt, "Product_ID,Product_Name,Product_Quantity,Product_Cost");
-        fprintf(fpt, "\n%d,%s,%d,%lf", pd.product_id, pd.product_name, pd.product_quantity, pd.product_cost);
+        fprintf(fpt, "Product_ID,Product_Name,Product_Quantity,Product_Cost,Product_Price");
+        fprintf(fpt, "\n%d,%s,%d,%lf,%lf", pd.product_id, pd.product_name, pd.product_quantity, pd.product_cost, pd.product_price);
         fileClose(fpt);
     }
     else
@@ -114,7 +114,7 @@ int new_Product(struct Product pd)
         if (checkPd.product_id < 0)
         {
             fpt = file_append_open(PRODUCT_FILE);
-            fprintf(fpt, "\n%d,%s,%d,%lf", pd.product_id, pd.product_name, pd.product_quantity, pd.product_cost);
+            fprintf(fpt, "\n%d,%s,%d,%lf,%lf", pd.product_id, pd.product_name, pd.product_quantity, pd.product_cost,pd.product_price);
             fileClose(fpt);
             return 1;
         }
@@ -129,8 +129,8 @@ int new_POS(struct POS pos) // Fixed by MMA
     if (is_file_exists(POS_FILE) == 0)
     {
         fpt = file_write_open(POS_FILE);
-        fprintf(fpt, "Bill_ID, Customer_Name, Transaction_Datetime_Sec, Transaction_Datetime_Min, Transaction_Datetime_Hour, Transaction_Datetime_Day, Transaction_Datetime_Month, Transaction_Datetime_Year, Product_Quantity , Product_Price, Product_Cost");
-        fprintf(fpt, "\n%d,%s,%d,%d,%d,%d,%d,%d,%d,%lf,%lf", pos.bill_id, pos.customer_name, pos.transaction_datetime.tm_sec, pos.transaction_datetime.tm_min, pos.transaction_datetime.tm_hour, pos.transaction_datetime.tm_mday, pos.transaction_datetime.tm_mon, pos.transaction_datetime.tm_year, pos.product_quantity, pos.product_price, pos.product_cost);
+        fprintf(fpt, "Bill_ID,Product_ID,Customer_Name,Transaction_Datetime_Sec,Transaction_Datetime_Min,Transaction_Datetime_Hour,Transaction_Datetime_Day,Transaction_Datetime_Month,Transaction_Datetime_Year,Product_Quantity,Product_Price,Product_Cost");
+        fprintf(fpt, "\n%d,%d,%s,%d,%d,%d,%d,%d,%d,%d,%lf,%lf", pos.bill_id, pos.product_id,pos.customer_name, pos.transaction_datetime.tm_sec, pos.transaction_datetime.tm_min, pos.transaction_datetime.tm_hour, pos.transaction_datetime.tm_mday, pos.transaction_datetime.tm_mon, pos.transaction_datetime.tm_year, pos.product_quantity, pos.product_price, pos.product_cost);
         fileClose(fpt);
     }
     else
@@ -139,7 +139,7 @@ int new_POS(struct POS pos) // Fixed by MMA
         if (checkpos.bill_id < 0)
         {
             fpt = file_append_open(POS_FILE);
-            fprintf(fpt, "\n%d,%s,%d,%d,%d,%d,%d,%d,%d,%lf,%lf", pos.bill_id, pos.customer_name, pos.transaction_datetime.tm_sec, pos.transaction_datetime.tm_min, pos.transaction_datetime.tm_hour, pos.transaction_datetime.tm_mday, pos.transaction_datetime.tm_mon, pos.transaction_datetime.tm_year, pos.product_quantity, pos.product_price, pos.product_cost);
+            fprintf(fpt, "\n%d,%d,%s,%d,%d,%d,%d,%d,%d,%d,%lf,%lf", pos.bill_id,pos.product_id, pos.customer_name, pos.transaction_datetime.tm_sec, pos.transaction_datetime.tm_min, pos.transaction_datetime.tm_hour, pos.transaction_datetime.tm_mday, pos.transaction_datetime.tm_mon, pos.transaction_datetime.tm_year, pos.product_quantity, pos.product_price, pos.product_cost);
             fileClose(fpt);
             return 1;
         }
@@ -201,7 +201,7 @@ int Product_Update(struct Product InPd)
         if (foundID == InPd.product_id)
         {
 
-            fprintf(tmpFile, "%d,%s,%d,%lf\n", InPd.product_id, InPd.product_name, InPd.product_quantity, InPd.product_cost);
+            fprintf(tmpFile, "%d,%s,%d,%lf,%lf\n", InPd.product_id, InPd.product_name, InPd.product_quantity, InPd.product_cost, InPd.product_price);
             state = 1;
         }
         else
@@ -244,7 +244,7 @@ int POS_Update(struct POS InPos)
 
         if (foundID == InPos.bill_id)
         {
-            fprintf(fpt, "\n%d,%s,%d,%d,%d,%d,%d,%d,%d,%lf,%lf", InPos.bill_id, InPos.customer_name, InPos.transaction_datetime.tm_sec, InPos.transaction_datetime.tm_min, InPos.transaction_datetime.tm_hour, InPos.transaction_datetime.tm_mday, InPos.transaction_datetime.tm_mon, InPos.transaction_datetime.tm_year, InPos.product_quantity, InPos.product_price, InPos.product_cost);
+            fprintf(fpt, "\n%d,%d,%s,%d,%d,%d,%d,%d,%d,%d,%lf,%lf", InPos.bill_id,InPos.product_id, InPos.customer_name, InPos.transaction_datetime.tm_sec, InPos.transaction_datetime.tm_min, InPos.transaction_datetime.tm_hour, InPos.transaction_datetime.tm_mday, InPos.transaction_datetime.tm_mon, InPos.transaction_datetime.tm_year, InPos.product_quantity, InPos.product_price, InPos.product_cost);
             state = 1;
         }
         else
@@ -339,20 +339,18 @@ struct Product Product_Delete(int id)
             strcpy(pd.product_name, strtok(NULL, ","));
             pd.product_quantity = atoi(strtok(NULL, ","));
             pd.product_cost = atof(strtok(NULL, ","));
+            pd.product_price = atof(strtok(NULL, ","));
         }
         else
         {
-            // TempLine[strlen(TempLine)-1]='\0';
-            // printf("\n%s",TempLine);
-            // fprintf(tmpFile, "\n%s", TempLine);
             fputs(TempLine,tmpFile);
         }
         free(tmp);
     }
     fclose(fpt);
     fclose(tmpFile);
-    // remove(PRODUCT_FILE);
-    rename(PRODUCT_FILE,"old");
+    remove(PRODUCT_FILE);
+    //rename(PRODUCT_FILE,"old");
     rename("tmp", PRODUCT_FILE);
     return pd;
 };
@@ -387,6 +385,7 @@ struct POS POS_Delete(int id)
         {
 
             pos.bill_id = foundID;
+            pos.product_id = atoi(strtok("NULL", ","));
             strcpy(pos.customer_name, strtok(NULL, ","));
             pos.transaction_datetime.tm_sec = atoi(strtok(NULL, ","));
             pos.transaction_datetime.tm_min = atoi(strtok(NULL, ","));
@@ -493,6 +492,7 @@ struct Product Product_Search(int id)
             strcpy(pd.product_name, strtok(NULL, ","));
             pd.product_quantity = atoi(strtok(NULL, ","));
             pd.product_cost = atof(strtok(NULL, ","));
+            pd.product_price = atof(strtok(NULL, ","));
             free(tmp);
             break;
         }
@@ -523,6 +523,7 @@ struct POS POS_Search(int id) // Fixed by MMA
         if (foundID == id)
         {
             pos.bill_id = foundID;
+            pos.product_id = atoi(strtok(NULL, ","));
             strcpy(pos.customer_name, strtok(NULL, ","));
             pos.transaction_datetime.tm_sec = atoi(strtok(NULL, ","));
             pos.transaction_datetime.tm_min = atoi(strtok(NULL, ","));

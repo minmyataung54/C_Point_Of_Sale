@@ -55,21 +55,37 @@ void Inventory()
 }
 void POS()          //Point of sale system
 {
-    char pos_item[item_name]; 
-    int item_code,item_quantity,item_price,pos_user_choice,total=0;
+    time_t t;
+    t = time(NULL);
+    struct tm *ptr;
+    ptr = localtime(&t);
+    struct POS pos;
+    //char pos_item[item_name]; 
+    //int item_code,item_quantity,item_price;
+    int pos_user_choice,total=0;
     printf("\n\t\t==================================================\n");
     printf("\t\t||\t    Point Of Sale system\t\t||\n");
     printf("\t\t==================================================\n");
+    printf("\n\tEnter Bill's ID: ");
+    scanf("%d",&pos.bill_id);
     printf("\n\tEnter Item's Code: ");
-    scanf("%d",&item_code);
+    scanf("%d",&pos.product_id);
+    printf("\n\tEnter Customer's Name: ");
+    scanf("%s",pos.customer_name);
     printf("\n\tEnter Item's Quantity: ");
-    scanf("%d",&item_quantity);
+    scanf("%d",&pos.product_quantity);
     printf("\n\tEnter Item's Sale Price: ");
-    scanf("%d",&item_price);
-    total = (item_quantity * item_price);
+    scanf("%lf",&pos.product_price);
+    pos.transaction_datetime.tm_sec = (int)ptr->tm_sec;
+    pos.transaction_datetime.tm_min = (int)ptr->tm_min;
+    pos.transaction_datetime.tm_hour = (int)ptr->tm_hour;
+    pos.transaction_datetime.tm_mday = (int)ptr->tm_mday;
+    pos.transaction_datetime.tm_mon = (int)ptr->tm_mon;
+    pos.transaction_datetime.tm_year = (int)ptr->tm_year;
+    total = (pos.product_quantity * pos.product_price);
     printf("\n\tTotal price = %d\n\n",total);
 
-    printf("\t\t==================================================\n");
+    /*printf("\t\t==================================================\n");
     printf("\t\t||\t Press 0 for stop adding items! \t||\n");
     printf("\t\t||\t Press 1 for keep adding items! \t||\n");
     printf("\t\t==================================================\n");
@@ -77,13 +93,17 @@ void POS()          //Point of sale system
     scanf("%d",&pos_user_choice);
     while (pos_user_choice ==1)
     {
+        printf("\n\tEnter Another Bill's ID: ");
+        scanf("%d",pos.bill_id);
         printf("\n\tEnter Another Item's Code: ");
-        scanf("%d",&item_code);
+        scanf("%d",&pos.product_id);
+        printf("\n\tEnter Customer's Name: ");
+        scanf("%s",pos.customer_name);
         printf("\n\tEnter Another Item's Quantity: ");
-        scanf("%d",&item_quantity);
+        scanf("%d",&pos.product_quantity);
         printf("\n\tEnter Another Item's Sale Price: ");
-        scanf("%d",&item_price);
-        total += (item_quantity * item_price);
+        scanf("%d",&pos.product_price);
+        total += (pos.product_quantity * pos.product_price);
         printf("\n\tTotal price = %d\n\n",total);
         printf("\t\t==================================================\n");
         printf("\t\t||\t Press 0 for stop adding items! \t||\n");
@@ -93,56 +113,64 @@ void POS()          //Point of sale system
         scanf("%d",&pos_user_choice);
     }
     if (pos_user_choice ==0)
-    {
+    {*/
         printf("\n\n\t\t Here is the bill receipt to print !!!");
-        printf("\n\n\tDate 30/11/2022");
-        printf("\n\t===============================================================\n");
-        printf("\tITEM CODE\t  ITEM NAME\t  PRICE\t   QTY\t    TOTAL PRICE");
-        printf("\n\t===============================================================\n");
-        printf("\t1001\t\t    Orange\t     2\t    10\t\t 20\n");
-        printf("\t1002\t\t    Shirt\t     5\t    30\t\t 150\n");
-        printf("\t1005\t\t    Cake\t     10\t    5\t\t 50\n");
+        //printf("\n\n\tDate 30/11/2022");
+        printf("Time: %d:%d:%d    Date - %d/%d/%d",pos.transaction_datetime.tm_hour,pos.transaction_datetime.tm_min,pos.transaction_datetime.tm_sec,pos.transaction_datetime.tm_mday,pos.transaction_datetime.tm_mon,pos.transaction_datetime.tm_year);
+        printf("\n\t===========================================================================\n");
+        printf("\tBILL ID\t  ITEM CODE\t  Customer's NAME\t  PRICE\t   QTY\t    TOTAL PRICE");
+        printf("\n\t===========================================================================\n");
+        printf("\t%d\t\t   %d\t\t %s\t     %lf\t    %d\t\t %d\n",pos.bill_id,pos.product_id,pos.customer_name,pos.product_price,pos.product_quantity,total);
+        
         MainMenu();
-    }
+    
 }
 void addItem()
 {
-    char add_item[item_name];
-    int item_cost,item_quantity,item_price;
+    struct Product pd;
+    //char add_item[item_name];
+    //double item_cost,item_quantity,item_price;
+    printf("\n\tInsert New Item's ID");
+    scanf("%d",&pd.product_id);
     printf("\n\tInsert New Item's Name:");
-    scanf("%s",add_item);
+    scanf("%s",pd.product_name);
     printf("\n\tInsert New Item's Cost:");
-    scanf("%d",&item_cost);
+    scanf("%lf",&pd.product_cost);
     printf("\n\tInsert the quantity of New Item:");
-    scanf("%d",&item_quantity);
+    scanf("%d",&pd.product_quantity);
     printf("\n\tInsert sale price of New Item:");
-    scanf("%d",&item_price);
-    viewItem();
+    scanf("%lf",&pd.product_price);
+    new_Product(pd);
+    //viewItem();
 }
 void updateItem()
 {
-    char update_item[item_name];
-    int item_cost,item_quantity,item_price;
+    struct Product Inpd;
+    //char update_item[item_name];
+    //int item_cost,item_quantity,item_price;
+    printf("\n\tEnter Item's Code:");
+    scanf("%d",&Inpd.product_id);
     printf("\n\tEnter Item's Name:");
-    scanf("%s",update_item);
+    scanf("%s",Inpd.product_name);
     printf("\n\tEnter Item's Cost:");
-    scanf("%d",&item_cost);
+    scanf("%lf",&Inpd.product_cost);
     printf("\n\tEnter the quantity of Item:");
-    scanf("%d",&item_quantity);
+    scanf("%d",&Inpd.product_quantity);
     printf("\n\tEnter sale price of Item:");
-    scanf("%d",&item_price);
-    viewItem();
+    scanf("%lf",&Inpd.product_price);
+    Product_Update(Inpd);
+    //viewItem();
 }
 void deleteItem()
 {
     int deleteItem_code;
-    char delete_item[item_name];
     printf("\n\tEnter the code of item that you want to delete: ");
     scanf("%d",&deleteItem_code);
-    printf("\n\tEnter the name of item that you want to delete: ");
-    scanf("%s",delete_item);
-    viewItem();
+    Product_Delete(deleteItem_code);
+    //viewItem();
 }
+
+
 
 void viewItem()
 {
@@ -159,6 +187,8 @@ void viewItem()
 
 void Accounting()
 {
+    struct Sale sale;
+    
     printf("\n\t==============================================================================\n");
     printf("\t\t\t\t\tAccounting System\t\t\t\t");
     printf("\n\t==============================================================================\n");

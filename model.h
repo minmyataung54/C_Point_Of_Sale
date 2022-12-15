@@ -4,6 +4,7 @@
 struct POS
 {
     int bill_id;
+    int product_id;
     char customer_name[255];
     struct tm transaction_datetime;
     int product_quantity;
@@ -16,6 +17,7 @@ struct Product
     char product_name[255];
     int product_quantity;
     double product_cost;
+    double product_price;
 };
 struct Sale
 {
