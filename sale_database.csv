@@ -1,2 +1,0 @@
-Transaction_ID,Product_ID,Product_Name,Product_Quantity,Product_Price,Product_Cost,Profit,Transaction_Datetime_Sec,Transaction_Datetime_Min,Transaction_Datetime_Hour,Transaction_Datetime_Day,Transaction_Datetime_Month,Transaction_Datetime_Year
-1,10,product_two,1,40.340000,23.110000,400.110000,38,42,15,15,11,122

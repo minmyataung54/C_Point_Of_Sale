@@ -24,6 +24,12 @@ void String_Token_Check()
     }
 }
 
+int POSCompareFunction(const void * a, const void * b) {
+    if(((struct POS*)a)->product_id > ((struct POS*)b)->product_id)
+        return 1;
+    return -1;
+}
+
 const char *getfield(char *line, int num)
 {
     const char *tok;
@@ -114,7 +120,7 @@ int new_Product(struct Product pd)
         if (checkPd.product_id < 0)
         {
             fpt = file_append_open(PRODUCT_FILE);
-            fprintf(fpt, "\n%d,%s,%d,%lf,%lf", pd.product_id, pd.product_name, pd.product_quantity, pd.product_cost,pd.product_price);
+            fprintf(fpt, "\n%d,%s,%d,%lf,%lf", pd.product_id, pd.product_name, pd.product_quantity, pd.product_cost, pd.product_price);
             fileClose(fpt);
             return 1;
         }
@@ -130,7 +136,7 @@ int new_POS(struct POS pos) // Fixed by MMA
     {
         fpt = file_write_open(POS_FILE);
         fprintf(fpt, "Bill_ID,Product_ID,Customer_Name,Transaction_Datetime_Sec,Transaction_Datetime_Min,Transaction_Datetime_Hour,Transaction_Datetime_Day,Transaction_Datetime_Month,Transaction_Datetime_Year,Product_Quantity,Product_Price,Product_Cost");
-        fprintf(fpt, "\n%d,%d,%s,%d,%d,%d,%d,%d,%d,%d,%lf,%lf", pos.bill_id, pos.product_id,pos.customer_name, pos.transaction_datetime.tm_sec, pos.transaction_datetime.tm_min, pos.transaction_datetime.tm_hour, pos.transaction_datetime.tm_mday, pos.transaction_datetime.tm_mon, pos.transaction_datetime.tm_year, pos.product_quantity, pos.product_price, pos.product_cost);
+        fprintf(fpt, "\n%d,%d,%s,%d,%d,%d,%d,%d,%d,%d,%lf,%lf", pos.bill_id, pos.product_id, pos.customer_name, pos.transaction_datetime.tm_sec, pos.transaction_datetime.tm_min, pos.transaction_datetime.tm_hour, pos.transaction_datetime.tm_mday, pos.transaction_datetime.tm_mon, pos.transaction_datetime.tm_year, pos.product_quantity, pos.product_price, pos.product_cost);
         fileClose(fpt);
     }
     else
@@ -139,7 +145,7 @@ int new_POS(struct POS pos) // Fixed by MMA
         if (checkpos.bill_id < 0)
         {
             fpt = file_append_open(POS_FILE);
-            fprintf(fpt, "\n%d,%d,%s,%d,%d,%d,%d,%d,%d,%d,%lf,%lf", pos.bill_id,pos.product_id, pos.customer_name, pos.transaction_datetime.tm_sec, pos.transaction_datetime.tm_min, pos.transaction_datetime.tm_hour, pos.transaction_datetime.tm_mday, pos.transaction_datetime.tm_mon, pos.transaction_datetime.tm_year, pos.product_quantity, pos.product_price, pos.product_cost);
+            fprintf(fpt, "\n%d,%d,%s,%d,%d,%d,%d,%d,%d,%d,%lf,%lf", pos.bill_id, pos.product_id, pos.customer_name, pos.transaction_datetime.tm_sec, pos.transaction_datetime.tm_min, pos.transaction_datetime.tm_hour, pos.transaction_datetime.tm_mday, pos.transaction_datetime.tm_mon, pos.transaction_datetime.tm_year, pos.product_quantity, pos.product_price, pos.product_cost);
             fileClose(fpt);
             return 1;
         }
@@ -190,6 +196,9 @@ int Product_Update(struct Product InPd)
         printf("file can't be opened \n");
     }
     char line[1024];
+    fgets(line, 1024, fpt);
+    line[strlen(line) - 1] = '\0';
+    fprintf(tmpFile, "%s", line);
     while (fgets(line, 1024, fpt))
     {
         char TempLine[1024];
@@ -201,13 +210,13 @@ int Product_Update(struct Product InPd)
         if (foundID == InPd.product_id)
         {
 
-            fprintf(tmpFile, "%d,%s,%d,%lf,%lf\n", InPd.product_id, InPd.product_name, InPd.product_quantity, InPd.product_cost, InPd.product_price);
+            fprintf(tmpFile, "\n%d,%s,%d,%lf,%lf", InPd.product_id, InPd.product_name, InPd.product_quantity, InPd.product_cost, InPd.product_price);
             state = 1;
         }
         else
         {
-
-            fprintf(tmpFile, "%s", TempLine);
+            TempLine[strlen(TempLine) - 1] = '\0';
+            fprintf(tmpFile, "\n%s", TempLine);
         }
         free(tmp);
     }
@@ -234,6 +243,9 @@ int POS_Update(struct POS InPos)
         printf("file can't be opened \n");
     }
     char line[1024];
+    fgets(line, 1024, fpt);
+    line[strlen(line) - 1] = '\0';
+    fprintf(tmpFile, "%s", line);
     while (fgets(line, 1024, fpt))
     {
         char TempLine[1024];
@@ -244,12 +256,13 @@ int POS_Update(struct POS InPos)
 
         if (foundID == InPos.bill_id)
         {
-            fprintf(fpt, "\n%d,%d,%s,%d,%d,%d,%d,%d,%d,%d,%lf,%lf", InPos.bill_id,InPos.product_id, InPos.customer_name, InPos.transaction_datetime.tm_sec, InPos.transaction_datetime.tm_min, InPos.transaction_datetime.tm_hour, InPos.transaction_datetime.tm_mday, InPos.transaction_datetime.tm_mon, InPos.transaction_datetime.tm_year, InPos.product_quantity, InPos.product_price, InPos.product_cost);
+            fprintf(fpt, "\n%d,%d,%s,%d,%d,%d,%d,%d,%d,%d,%lf,%lf", InPos.bill_id, InPos.product_id, InPos.customer_name, InPos.transaction_datetime.tm_sec, InPos.transaction_datetime.tm_min, InPos.transaction_datetime.tm_hour, InPos.transaction_datetime.tm_mday, InPos.transaction_datetime.tm_mon, InPos.transaction_datetime.tm_year, InPos.product_quantity, InPos.product_price, InPos.product_cost);
             state = 1;
         }
         else
         {
-            fprintf(tmpFile, "%s", TempLine);
+            TempLine[strlen(TempLine) - 1] = '\0';
+            fprintf(tmpFile, "\n%s", TempLine);
         }
         free(tmp);
     }
@@ -276,6 +289,9 @@ int Sale_Update(struct Sale InSale)
         printf("file can't be opened \n");
     }
     char line[1024];
+    fgets(line, 1024, fpt);
+    line[strlen(line) - 1] = '\0';
+    fprintf(tmpFile, "%s", line);
     while (fgets(line, 1024, fpt))
     {
         char TempLine[1024];
@@ -291,7 +307,8 @@ int Sale_Update(struct Sale InSale)
         }
         else
         {
-            fprintf(tmpFile, "%s", TempLine);
+            TempLine[strlen(TempLine) - 1] = '\0';
+            fprintf(tmpFile, "\n%s", TempLine);
         }
         free(tmp);
     }
@@ -323,18 +340,15 @@ struct Product Product_Delete(int id)
     fprintf(tmpFile, "%s", line);
     while (fgets(line, 1024, fpt))
     {
-        
+
         char TempLine[1024];
         strcpy(TempLine, line);
-        printf("%s",TempLine);
-        printf("Len %lu\n",strlen(TempLine));
         int foundID = atoi(strtok(line, ","));
 
         char *tmp = strdup(line);
 
         if (foundID == id)
         {
-            printf("Found\n");
             pd.product_id = foundID;
             strcpy(pd.product_name, strtok(NULL, ","));
             pd.product_quantity = atoi(strtok(NULL, ","));
@@ -343,14 +357,14 @@ struct Product Product_Delete(int id)
         }
         else
         {
-            fputs(TempLine,tmpFile);
+            fprintf(tmpFile, "%s", TempLine);
         }
         free(tmp);
     }
     fclose(fpt);
     fclose(tmpFile);
     remove(PRODUCT_FILE);
-    //rename(PRODUCT_FILE,"old");
+    // rename(PRODUCT_FILE,"old");
     rename("tmp", PRODUCT_FILE);
     return pd;
 };
@@ -372,6 +386,8 @@ struct POS POS_Delete(int id)
         printf("file can't be opened \n");
     }
     char line[1024];
+    fgets(line, 1024, fpt);
+    fprintf(tmpFile, "%s", line);
     while (fgets(line, 1024, fpt))
     {
 
@@ -427,6 +443,8 @@ struct Sale Sale_Delete(int id)
         printf("file can't be opened \n");
     }
     char line[1024];
+    fgets(line, 1024, fpt);
+    fprintf(tmpFile, "%s", line);
     while (fgets(line, 1024, fpt))
     {
 
@@ -585,6 +603,70 @@ struct Sale Sale_Search(int id) // Fixed By MMA
     return sale;
 }
 
+struct POS *POS_Many_Search_By_Date(struct tm transaction_datetime,int *length)
+{
+    FILE *fpt;
+    struct POS pos;
+    struct POS *posPtr;
+    struct POS *tempPOSPtr;
+    *length = 0;
+
+    char ch;
+    fpt = fopen(POS_FILE, "r");
+    if (NULL == fpt)
+    {
+        printf("file can't be opened hote lar\n");
+    }
+    char line[1024];
+    fgets(line, 1024, fpt);
+    while (fgets(line, 1024, fpt))
+    {
+        int foundID = atoi(strtok(line, ","));
+        pos.product_id = atoi(strtok(NULL, ","));
+        strcpy(pos.customer_name, strtok(NULL, ","));
+        pos.transaction_datetime.tm_sec = atoi(strtok(NULL, ","));
+        pos.transaction_datetime.tm_min = atoi(strtok(NULL, ","));
+        pos.transaction_datetime.tm_hour = atoi(strtok(NULL, ","));
+        pos.transaction_datetime.tm_mday = atoi(strtok(NULL, ","));
+        pos.transaction_datetime.tm_mon = atoi(strtok(NULL, ","));
+        pos.transaction_datetime.tm_year = atoi(strtok(NULL, ","));
+        pos.product_quantity = atoi(strtok(NULL, ","));
+        pos.product_price = atof(strtok(NULL, ","));
+        pos.product_cost = atof(strtok(NULL, ","));
+        char *tmp = strdup(line);
+
+        if ((pos.transaction_datetime.tm_year==transaction_datetime.tm_year)&(pos.transaction_datetime.tm_mon==transaction_datetime.tm_mon)&(pos.transaction_datetime.tm_mday==transaction_datetime.tm_mday))
+        {
+            *length = *length + 1;
+            if(*length==1){
+                posPtr = (struct POS *)malloc(*length*sizeof(struct POS));
+                posPtr[*length-1] = pos;
+                tempPOSPtr = (struct POS *)malloc(*length*sizeof(struct POS));
+                tempPOSPtr[*length-1] = pos;
+            }else
+            {
+                posPtr = (struct POS *)malloc(*length*sizeof(struct POS));
+                posPtr[*length-1] = pos;
+                for (int i = 0; i < *length-1; i++)
+                {
+                    posPtr[i] = tempPOSPtr[i];
+                }
+                tempPOSPtr = (struct POS *)malloc(*length*sizeof(struct POS));
+                tempPOSPtr[*length-1] = pos;
+                for (int i = 0; i < *length-1; i++)
+                {
+                    tempPOSPtr[i] = posPtr[i];
+                }
+                
+            }
+        }
+        free(tmp);
+    }
+    fclose(fpt);
+    qsort(posPtr,*length,sizeof(struct POS),POSCompareFunction);
+    return posPtr;
+}
+
 // @docs - To Close file after every operation
 void fileClose(FILE *fpt)
 {
@@ -612,5 +694,5 @@ void Display_Product(struct Product pd)
 
 void Display_POS(struct POS pos)
 {
-    printf("Bill ID: %d\nCustomer Name: %s\nTime: %s\nProduct Quantity: %d\nProduct Price: %lf\nProduct Cost: %lf\n", pos.bill_id, pos.customer_name, asctime(&pos.transaction_datetime), pos.product_quantity, pos.product_price, pos.product_cost);
+    printf("Bill ID: %d\nCustomer Name: %s\nTime: %s\nProduct ID: %d\nProduct Quantity: %d\nProduct Price: %lf\nProduct Cost: %lf\n", pos.bill_id, pos.customer_name, asctime(&pos.transaction_datetime),pos.product_id, pos.product_quantity, pos.product_price, pos.product_cost);
 }
