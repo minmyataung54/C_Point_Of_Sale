@@ -1,0 +1,4 @@
+Bill_ID,Product_ID,Customer_Name,Transaction_Datetime_Sec,Transaction_Datetime_Min,Transaction_Datetime_Hour,Transaction_Datetime_Day,Transaction_Datetime_Month,Transaction_Datetime_Year,Product_Quantity,Product_Price,Product_Cost
+10001,1,min,49,30,21,15,11,122,10,5.000000,0.000000
+10002,1002,thaw,58,33,21,15,11,122,50,10.000000,0.000000
+10003,1003,ag,59,47,21,15,11,122,10,50.000000,0.000000

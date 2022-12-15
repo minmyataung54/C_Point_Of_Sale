@@ -622,6 +622,7 @@ struct POS *POS_Many_Search_By_Date(struct tm transaction_datetime,int *length)
     while (fgets(line, 1024, fpt))
     {
         int foundID = atoi(strtok(line, ","));
+        pos.bill_id = foundID ;
         pos.product_id = atoi(strtok(NULL, ","));
         strcpy(pos.customer_name, strtok(NULL, ","));
         pos.transaction_datetime.tm_sec = atoi(strtok(NULL, ","));

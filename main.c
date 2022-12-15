@@ -7,7 +7,7 @@
 #include "model.h"
 #include "env.h"
 
-
+void viewPOS();
 void POS();
 void MainMenu();
 void addItem();
@@ -53,8 +53,9 @@ void Inventory()
 
     }
 }
-void POS()          //Point of sale system
+void customer_bill()
 {
+    
     time_t t;
     t = time(NULL);
     struct tm *ptr;
@@ -63,9 +64,6 @@ void POS()          //Point of sale system
     //char pos_item[item_name]; 
     //int item_code,item_quantity,item_price;
     int pos_user_choice,total=0;
-    printf("\n\t\t==================================================\n");
-    printf("\t\t||\t    Point Of Sale system\t\t||\n");
-    printf("\t\t==================================================\n");
     printf("\n\tEnter Bill's ID: ");
     scanf("%d",&pos.bill_id);
     printf("\n\tEnter Item's Code: ");
@@ -84,6 +82,74 @@ void POS()          //Point of sale system
     pos.transaction_datetime.tm_year = (int)ptr->tm_year;
     total = (pos.product_quantity * pos.product_price);
     printf("\n\tTotal price = %d\n\n",total);
+    //new_POS(pos);
+    printf("\n\n\t\t Here is the bill receipt to print !!!\n\n");
+        //printf("\n\n\tDate 30/11/2022");
+        printf("\tTime: %d:%d:%d    Date - %d/%d/%d",pos.transaction_datetime.tm_hour,pos.transaction_datetime.tm_min,pos.transaction_datetime.tm_sec,pos.transaction_datetime.tm_mday,pos.transaction_datetime.tm_mon,pos.transaction_datetime.tm_year);
+        printf("\n\t==============================================================================================\n");
+        printf("\tBILL ID  \tITEM CODE\t  Customer's NAME\t  PRICE\t\t   QTY\t    TOTAL PRICE");
+        printf("\n\t==============================================================================================\n");
+        printf("         %d           %d                %s            %lf            %d         %d\n",pos.bill_id,pos.product_id,pos.customer_name,pos.product_price,pos.product_quantity,total);
+        
+        MainMenu();
+}
+
+void viewPOS()
+{
+    struct POS pos;
+    struct tm date;
+    printf("\n\tEnter the day that you want to search: ");
+    scanf("%d",&date.tm_mday);
+    printf("\n\tEnter the month that you want to search: ");
+    scanf("%d",&date.tm_mon);
+    printf("\n\tEnter the year that you want to search: ");
+    scanf("%d",&date.tm_year);
+    printf("\n\t==============================================================================================\n");
+    printf("\tBILL ID  \tITEM CODE\t  Customer's NAME\t  PRICE\t\t   QTY\t    TOTAL PRICE");
+    printf("\n\t==============================================================================================\n");
+    struct POS *posPtr;
+    int len;
+    posPtr = POS_Many_Search_By_Date(date,&len);
+    for (int i=0; i<len; i++)
+    {
+        int total = posPtr[i].product_price * posPtr[i].product_quantity;
+        printf("         %d           %d                %s            %lf            %d         %d\n",posPtr[i].bill_id,posPtr[i].product_id,posPtr[i].customer_name,posPtr[i].product_price,posPtr[i].product_quantity,total);
+    }
+
+    MainMenu();
+
+
+}
+
+
+void POS()          //Point of sale system
+{
+    int pos_choice;
+    printf("\n\t\t==================================================\n");
+    printf("\t\t||\t    Point Of Sale system\t\t||\n");
+    printf("\t\t===================================================");
+    printf("\n\t\t||\t        1. View POS by date             ||");
+	printf("\n\t\t||\t        2. Customer's Bill              ||");
+	printf("\n\t\t||\t        3. Go Back                      ||");
+    printf("\n\t\t==================================================\n");
+    printf("\n\t\t          Select Transaction : ");
+    scanf("%d",&pos_choice);
+    switch(pos_choice)
+    {
+        case 1:
+        viewPOS();
+        break;
+
+        case 2:
+        customer_bill();
+        break;
+
+        case 3:
+        MainMenu();
+        break;
+    }
+    
+    
 
     /*printf("\t\t==================================================\n");
     printf("\t\t||\t Press 0 for stop adding items! \t||\n");
@@ -114,15 +180,7 @@ void POS()          //Point of sale system
     }
     if (pos_user_choice ==0)
     {*/
-        printf("\n\n\t\t Here is the bill receipt to print !!!");
-        //printf("\n\n\tDate 30/11/2022");
-        printf("Time: %d:%d:%d    Date - %d/%d/%d",pos.transaction_datetime.tm_hour,pos.transaction_datetime.tm_min,pos.transaction_datetime.tm_sec,pos.transaction_datetime.tm_mday,pos.transaction_datetime.tm_mon,pos.transaction_datetime.tm_year);
-        printf("\n\t===========================================================================\n");
-        printf("\tBILL ID\t  ITEM CODE\t  Customer's NAME\t  PRICE\t   QTY\t    TOTAL PRICE");
-        printf("\n\t===========================================================================\n");
-        printf("\t%d\t\t   %d\t\t %s\t     %lf\t    %d\t\t %d\n",pos.bill_id,pos.product_id,pos.customer_name,pos.product_price,pos.product_quantity,total);
         
-        MainMenu();
     
 }
 void addItem()
@@ -130,7 +188,7 @@ void addItem()
     struct Product pd;
     //char add_item[item_name];
     //double item_cost,item_quantity,item_price;
-    printf("\n\tInsert New Item's ID");
+    printf("\n\tInsert New Item's ID:");
     scanf("%d",&pd.product_id);
     printf("\n\tInsert New Item's Name:");
     scanf("%s",pd.product_name);
