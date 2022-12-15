@@ -1,2 +1,4 @@
 Product_ID,Product_Name,Product_Quantity,Product_Cost,Product_Price
-10001,thaw,30,200.000000,100.000000
+110001,apple,100,5.000000,10.000000
+110002,orange,200,3.000000,7.000000
+110003,ballpen,500,2.000000,4.000000

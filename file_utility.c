@@ -603,6 +603,66 @@ struct Sale Sale_Search(int id) // Fixed By MMA
     return sale;
 }
 
+struct Product *Product_Retrive(int *length)
+{
+    FILE *fpt;
+    struct Product pd;
+    struct Product *pdPtr;
+    struct Product *tempPdPtr;
+    *length = 0;
+
+    char ch;
+    fpt = fopen(PRODUCT_FILE, "r");
+    if (NULL == fpt)
+    {
+        printf("file can't be opened hote lar\n");
+    }
+    char line[1024];
+    fgets(line, 1024, fpt);
+    while (fgets(line, 1024, fpt))
+    {
+        int foundID = atoi(strtok(line, ","));
+        pd.product_id = foundID;
+        strcpy(pd.product_name, strtok(NULL, ","));
+        pd.product_quantity = atoi(strtok(NULL, ","));
+        pd.product_cost = atof(strtok(NULL, ","));
+        pd.product_price = atof(strtok(NULL, ","));
+        char *tmp = strdup(line);
+
+        *length = *length + 1;
+        if (*length == 1)
+        {
+            pdPtr = (struct Product *)malloc(*length * sizeof(struct Product));
+            pdPtr[*length - 1] = pd;
+            tempPdPtr = (struct Product *)malloc(*length * sizeof(struct Product));
+            tempPdPtr[*length-1] = pd;
+            tempPdPtr[*length - 1] = pd;
+        }
+        else
+        {
+            pdPtr = (struct Product *)malloc(*length * sizeof(struct Product));
+            pdPtr[*length - 1] = pd;
+            for (int i = 0; i < *length - 1; i++)
+            {
+                pdPtr[i] = tempPdPtr[i];
+            }
+            tempPdPtr = (struct Product *)malloc(*length * sizeof(struct Product));
+            tempPdPtr[*length - 1] = pd;
+            for (int i = 0; i < *length - 1; i++)
+            {
+                tempPdPtr[i] = pdPtr[i];
+            }
+        }
+        free(tmp);
+    }
+    for(int i=0;i<*length;i++)
+    {
+        Display_Product(pdPtr[i]);
+    }
+    fclose(fpt);
+    return pdPtr;
+}
+
 struct POS *POS_Many_Search_By_Date(struct tm transaction_datetime,int *length)
 {
     FILE *fpt;

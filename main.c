@@ -53,6 +53,7 @@ void Inventory()
 
     }
 }
+
 void customer_bill()
 {
     
@@ -82,7 +83,7 @@ void customer_bill()
     pos.transaction_datetime.tm_year = (int)ptr->tm_year;
     total = (pos.product_quantity * pos.product_price);
     printf("\n\tTotal price = %d\n\n",total);
-    //new_POS(pos);
+    new_POS(pos);
     printf("\n\n\t\t Here is the bill receipt to print !!!\n\n");
         //printf("\n\n\tDate 30/11/2022");
         printf("\tTime: %d:%d:%d    Date - %d/%d/%d",pos.transaction_datetime.tm_hour,pos.transaction_datetime.tm_min,pos.transaction_datetime.tm_sec,pos.transaction_datetime.tm_mday,pos.transaction_datetime.tm_mon,pos.transaction_datetime.tm_year);
@@ -104,6 +105,7 @@ void viewPOS()
     scanf("%d",&date.tm_mon);
     printf("\n\tEnter the year that you want to search: ");
     scanf("%d",&date.tm_year);
+    printf("\n\tDate-%d/%d/%d",date.tm_mday,date.tm_mon,date.tm_year);
     printf("\n\t==============================================================================================\n");
     printf("\tBILL ID  \tITEM CODE\t  Customer's NAME\t  PRICE\t\t   QTY\t    TOTAL PRICE");
     printf("\n\t==============================================================================================\n");
@@ -115,7 +117,7 @@ void viewPOS()
         int total = posPtr[i].product_price * posPtr[i].product_quantity;
         printf("         %d           %d                %s            %lf            %d         %d\n",posPtr[i].bill_id,posPtr[i].product_id,posPtr[i].customer_name,posPtr[i].product_price,posPtr[i].product_quantity,total);
     }
-
+    printf("\t==============================================================================================\n");
     MainMenu();
 
 
@@ -127,7 +129,7 @@ void POS()          //Point of sale system
     int pos_choice;
     printf("\n\t\t==================================================\n");
     printf("\t\t||\t    Point Of Sale system\t\t||\n");
-    printf("\t\t===================================================");
+    printf("\t\t==================================================");
     printf("\n\t\t||\t        1. View POS by date             ||");
 	printf("\n\t\t||\t        2. Customer's Bill              ||");
 	printf("\n\t\t||\t        3. Go Back                      ||");
@@ -188,18 +190,18 @@ void addItem()
     struct Product pd;
     //char add_item[item_name];
     //double item_cost,item_quantity,item_price;
-    printf("\n\tInsert New Item's ID:");
+    printf("\n\tInsert New Item's ID: ");
     scanf("%d",&pd.product_id);
-    printf("\n\tInsert New Item's Name:");
+    printf("\n\tInsert New Item's Name: ");
     scanf("%s",pd.product_name);
-    printf("\n\tInsert New Item's Cost:");
+    printf("\n\tInsert New Item's Cost: ");
     scanf("%lf",&pd.product_cost);
-    printf("\n\tInsert the quantity of New Item:");
+    printf("\n\tInsert the quantity of New Item: ");
     scanf("%d",&pd.product_quantity);
-    printf("\n\tInsert sale price of New Item:");
+    printf("\n\tInsert sale price of New Item: ");
     scanf("%lf",&pd.product_price);
     new_Product(pd);
-    //viewItem();
+    viewItem();
 }
 void updateItem()
 {
@@ -217,7 +219,7 @@ void updateItem()
     printf("\n\tEnter sale price of Item:");
     scanf("%lf",&Inpd.product_price);
     Product_Update(Inpd);
-    //viewItem();
+    viewItem();
 }
 void deleteItem()
 {
@@ -225,41 +227,87 @@ void deleteItem()
     printf("\n\tEnter the code of item that you want to delete: ");
     scanf("%d",&deleteItem_code);
     Product_Delete(deleteItem_code);
-    //viewItem();
+    viewItem();
 }
 
 
 
 void viewItem()
 {
+    struct Product *Product_Array;
+    int length;
+    Product_Array = Product_Retrive(&length);
     printf("\n\n\t\t\t\tLIST OF ITEMS");
     printf("\n\t===============================================================\n");
-    printf("\tITEM CODE\t  ITEM NAME\t  COST\t   QTY\t    SALE_PRICE");
+    printf("\tITEM CODE\t  ITEM NAME\t  QTY\t   COST\t    SALE_PRICE");
     printf("\n\t===============================================================");
-    printf("\n\t0001  \t\t    orange\t   1\t    10\t\t2");
-    printf("\n\t0002  \t\t    apple\t   2\t    10\t\t4");
+    for(int i=0;i<length;i++){
+        printf("\n\t%d  \t\t    %s\t   %d\t    %lf\t\t%lf",Product_Array[i].product_id,Product_Array[i].product_name,Product_Array[i].product_quantity,Product_Array[i].product_cost,Product_Array[i].product_price);
+    }
     printf("\n\t===============================================================");
     Inventory();
 
 }
+void ShowProfitTable(struct tm date)
+{
+    struct POS *posPtr;
+    int len;
+    posPtr = POS_Many_Search_By_Date(date, &len);
+    int tempId = -1;
+    double profit = 0;
+    int quantity = 0;
+    // char productName[255];
+    // struct POS pos;
+    struct Product pd;
+    for (int i = 0; i < len; i++)
+    {
+        if (posPtr[i].product_id != tempId)
+        {
+            if (tempId != -1)
+            {
+                profit = (pd.product_price - pd.product_cost) * quantity;
+                printf("\t%d %s %d %lf %lf %lf\n", pd.product_id, pd.product_name, quantity, pd.product_cost, pd.product_price, profit);
+            }
+            // pos.product_id = posPtr[i].product_id;
+            pd = Product_Search(posPtr[i].product_id);
+            quantity = posPtr[i].product_quantity;
+            tempId = posPtr[i].product_id;
+        }
+        else
+        {
+            quantity += posPtr[i].product_quantity;
+        }
+    }
+    profit = (pd.product_price - pd.product_cost) * quantity;
+    printf("\t%d %s %d %lf %lf %lf", pd.product_id, pd.product_name, quantity, pd.product_cost, pd.product_price, profit);
+}
+
 
 void Accounting()
 {
     struct Sale sale;
-    
+    struct tm date;
     printf("\n\t==============================================================================\n");
     printf("\t\t\t\t\tAccounting System\t\t\t\t");
     printf("\n\t==============================================================================\n");
-    printf("\n\t Date - 20/12/2022\n");
+    printf("\n\tEnter the day that you want to search: ");
+    scanf("%d",&date.tm_mday);
+    printf("\n\tEnter the month that you want to search: ");
+    scanf("%d",&date.tm_mon);
+    printf("\n\tEnter the year that you want to search: ");
+    scanf("%d",&date.tm_year);
+    printf("\n\tDate - %d/%d/%d\n",date.tm_mday,date.tm_mon,date.tm_year);
     printf("\n\tThe below is the list of items that are being sold on this day");
     printf("\n\t==============================================================================\n");
     printf("\tITEM CODE\t  ITEM NAME\t  COST\t   QTY\t    SALE_PRICE    PROFIT");
     printf("\n\t==============================================================================\n");
-    printf("\t1001\t\t   Apple\t   10\t   100\t\t 20\t   1000\n");
+    ShowProfitTable(date);
+    printf("\n");
+    /*printf("\t1001\t\t   Apple\t   10\t   100\t\t 20\t   1000\n");
     printf("\t1002\t\t   Orange\t   5\t   100\t\t 15\t   1000\n");
-    printf("\t1002\t\t   Ball Pen\t   3\t   100\t\t 5\t   200\n");
+    printf("\t1002\t\t   Ball Pen\t   3\t   100\t\t 5\t   200\n");*/
     printf("\t==============================================================================\n");
-    printf("\t\t\t\t\t\t\t    TOTAL PROFIT | 2200");
+    //printf("\t\t\t\t\t\t\t    TOTAL PROFIT | 2200");
     MainMenu();
 
 }
@@ -302,7 +350,7 @@ void Exit()
 void MainMenu()
 {
     int user_choice;
-    printf("\n\n\n\n");
+    printf("\n\n\n");
 	    printf("\t  ____  _                             _       ____  _                 \n");
         printf("\t / ___|| |__   ___   __ _ _   _ _ __ ( )___  / ___|| |_ ___  _ __ ___ \n");
         printf("\t \\___ \\| '_ \\ / _ \\ / _` | | | | '_ \\|// __| \\___ \\| __/ _ \\| '__/ _ \\\n");

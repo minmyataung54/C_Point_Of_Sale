@@ -18,6 +18,7 @@ extern struct Sale Sale_Delete(int id);
 extern struct Product Product_Search(int id);
 extern struct POS POS_Search(int id);           
 extern struct Sale Sale_Search(int id);
+extern struct Product *Product_Retrive(int *length);
 extern struct POS *POS_Many_Search_By_Date(struct tm transaction_datetime,int *length);
 extern void fileClose(FILE *fpt);
 extern int is_file_exists(const char *fname);
