@@ -51,6 +51,12 @@ void Inventory()
         MainMenu();
         break;
 
+        default:
+        printf("\n\tYou inputed wrong choice.Please Try Again");
+        
+        Inventory();
+        
+
     }
 }
 
@@ -73,26 +79,33 @@ void customer_bill()
     scanf("%s",pos.customer_name);
     printf("\n\tEnter Item's Quantity: ");
     scanf("%d",&pos.product_quantity);
-    printf("\n\tEnter Item's Sale Price: ");
-    scanf("%lf",&pos.product_price);
-    pos.transaction_datetime.tm_sec = (int)ptr->tm_sec;
-    pos.transaction_datetime.tm_min = (int)ptr->tm_min;
-    pos.transaction_datetime.tm_hour = (int)ptr->tm_hour;
-    pos.transaction_datetime.tm_mday = (int)ptr->tm_mday;
-    pos.transaction_datetime.tm_mon = (int)ptr->tm_mon;
-    pos.transaction_datetime.tm_year = (int)ptr->tm_year;
-    total = (pos.product_quantity * pos.product_price);
-    printf("\n\tTotal price = %d\n\n",total);
-    new_POS(pos);
-    printf("\n\n\t\t Here is the bill receipt to print !!!\n\n");
-        //printf("\n\n\tDate 30/11/2022");
-        printf("\tTime: %d:%d:%d    Date - %d/%d/%d",pos.transaction_datetime.tm_hour,pos.transaction_datetime.tm_min,pos.transaction_datetime.tm_sec,pos.transaction_datetime.tm_mday,pos.transaction_datetime.tm_mon,pos.transaction_datetime.tm_year);
-        printf("\n\t==============================================================================================\n");
-        printf("\tBILL ID  \tITEM CODE\t  Customer's NAME\t  PRICE\t\t   QTY\t    TOTAL PRICE");
-        printf("\n\t==============================================================================================\n");
-        printf("         %d           %d                %s            %lf            %d         %d\n",pos.bill_id,pos.product_id,pos.customer_name,pos.product_price,pos.product_quantity,total);
-        
-        MainMenu();
+    if(pos.product_quantity < 1)
+    {
+        printf("\n\tPlease enter possible quantity.\n");
+        customer_bill();
+    }
+    else{
+        printf("\n\tEnter Item's Sale Price: ");
+        scanf("%lf",&pos.product_price);
+        pos.transaction_datetime.tm_sec = (int)ptr->tm_sec;
+        pos.transaction_datetime.tm_min = (int)ptr->tm_min;
+        pos.transaction_datetime.tm_hour = (int)ptr->tm_hour;
+        pos.transaction_datetime.tm_mday = (int)ptr->tm_mday;
+        pos.transaction_datetime.tm_mon = (int)ptr->tm_mon;
+        pos.transaction_datetime.tm_year = (int)ptr->tm_year;
+        total = (pos.product_quantity * pos.product_price);
+        printf("\n\tTotal price = %d\n\n",total);
+        new_POS(pos);
+        printf("\n\n\t\t Here is the bill receipt to print !!!\n\n");
+            //printf("\n\n\tDate 30/11/2022");
+            printf("\tTime: %d:%d:%d    Date - %d/%d/%d",pos.transaction_datetime.tm_hour,pos.transaction_datetime.tm_min,pos.transaction_datetime.tm_sec,pos.transaction_datetime.tm_mday,pos.transaction_datetime.tm_mon,pos.transaction_datetime.tm_year);
+            printf("\n\t==============================================================================================\n");
+            printf("\tBILL ID  \tITEM CODE\t  Customer's NAME\t  PRICE\t\t   QTY\t    TOTAL PRICE");
+            printf("\n\t==============================================================================================\n");
+            printf("    \t%d      \t%d           \t%s         \t%lf\t    %d   \t%d\n",pos.bill_id,pos.product_id,pos.customer_name,pos.product_price,pos.product_quantity,total);
+            
+            MainMenu();
+    }
 }
 
 void viewPOS()
@@ -115,7 +128,7 @@ void viewPOS()
     for (int i=0; i<len; i++)
     {
         int total = posPtr[i].product_price * posPtr[i].product_quantity;
-        printf("         %d           %d                %s            %lf            %d         %d\n",posPtr[i].bill_id,posPtr[i].product_id,posPtr[i].customer_name,posPtr[i].product_price,posPtr[i].product_quantity,total);
+        printf("    \t%d      \t%d           \t%s         \t%lf\t    %d   \t%d\n",posPtr[i].bill_id,posPtr[i].product_id,posPtr[i].customer_name,posPtr[i].product_price,posPtr[i].product_quantity,total);
     }
     printf("\t==============================================================================================\n");
     MainMenu();
@@ -149,6 +162,11 @@ void POS()          //Point of sale system
         case 3:
         MainMenu();
         break;
+
+        default:
+        printf("\n\tYou inputed wrong choice.Please Try Again.");
+
+        POS();
     }
     
     
@@ -242,7 +260,7 @@ void viewItem()
     printf("\tITEM CODE\t  ITEM NAME\t  QTY\t   COST\t    SALE_PRICE");
     printf("\n\t===============================================================");
     for(int i=0;i<length;i++){
-        printf("\n\t%d  \t\t    %s\t   %d\t    %lf\t\t%lf",Product_Array[i].product_id,Product_Array[i].product_name,Product_Array[i].product_quantity,Product_Array[i].product_cost,Product_Array[i].product_price);
+        printf("\n\t%d  \t    %s\t   %d\t    %lf\t%lf",Product_Array[i].product_id,Product_Array[i].product_name,Product_Array[i].product_quantity,Product_Array[i].product_cost,Product_Array[i].product_price);
     }
     printf("\n\t===============================================================");
     Inventory();
@@ -266,7 +284,7 @@ void ShowProfitTable(struct tm date)
             if (tempId != -1)
             {
                 profit = (pd.product_price - pd.product_cost) * quantity;
-                printf("\t%d %s %d %lf %lf %lf\n", pd.product_id, pd.product_name, quantity, pd.product_cost, pd.product_price, profit);
+                printf("\t%d\t\t  %s \t %lf \t   %d\t     %lf\t   %lf\n", pd.product_id, pd.product_name, pd.product_cost, quantity, pd.product_price, profit);
             }
             // pos.product_id = posPtr[i].product_id;
             pd = Product_Search(posPtr[i].product_id);
@@ -279,7 +297,7 @@ void ShowProfitTable(struct tm date)
         }
     }
     profit = (pd.product_price - pd.product_cost) * quantity;
-    printf("\t%d %s %d %lf %lf %lf", pd.product_id, pd.product_name, quantity, pd.product_cost, pd.product_price, profit);
+    printf("\t%d\t\t  %s \t %lf \t   %d\t     %lf\t   %lf\n", pd.product_id, pd.product_name, pd.product_cost, quantity, pd.product_price, profit);
 }
 
 
@@ -298,15 +316,15 @@ void Accounting()
     scanf("%d",&date.tm_year);
     printf("\n\tDate - %d/%d/%d\n",date.tm_mday,date.tm_mon,date.tm_year);
     printf("\n\tThe below is the list of items that are being sold on this day");
-    printf("\n\t==============================================================================\n");
-    printf("\tITEM CODE\t  ITEM NAME\t  COST\t   QTY\t    SALE_PRICE    PROFIT");
-    printf("\n\t==============================================================================\n");
+    printf("\n\t====================================================================================\n");
+    printf("\tITEM CODE\t  ITEM NAME\t  COST\t\t   QTY\t    SALE_PRICE\t    PROFIT");
+    printf("\n\t====================================================================================\n");
     ShowProfitTable(date);
-    printf("\n");
+    
     /*printf("\t1001\t\t   Apple\t   10\t   100\t\t 20\t   1000\n");
     printf("\t1002\t\t   Orange\t   5\t   100\t\t 15\t   1000\n");
     printf("\t1002\t\t   Ball Pen\t   3\t   100\t\t 5\t   200\n");*/
-    printf("\t==============================================================================\n");
+    printf("\n\t====================================================================================\n");
     //printf("\t\t\t\t\t\t\t    TOTAL PROFIT | 2200");
     MainMenu();
 
@@ -389,6 +407,10 @@ void MainMenu()
             case 4:
             Exit();
             break;
+
+            default:
+            printf("\n\tYou inputed wrong choice.Please Try Again.");
+            MainMenu();
         }
 
 }

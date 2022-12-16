@@ -655,10 +655,10 @@ struct Product *Product_Retrive(int *length)
         }
         free(tmp);
     }
-    for(int i=0;i<*length;i++)
+    /*for(int i=0;i<*length;i++)
     {
         Display_Product(pdPtr[i]);
-    }
+    }*/
     fclose(fpt);
     return pdPtr;
 }

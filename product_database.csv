@@ -2,3 +2,5 @@ Product_ID,Product_Name,Product_Quantity,Product_Cost,Product_Price
 110001,apple,100,5.000000,10.000000
 110002,orange,200,3.000000,7.000000
 110003,ballpen,500,2.000000,4.000000
+110004,eraser,300,4.000000,8.000000
+110005,tissue,600,3.000000,7.000000
