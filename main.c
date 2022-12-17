@@ -15,6 +15,7 @@ void updateItem();
 void viewItem();
 void deleteItem();
 void Accounting();
+void viewInventory();
 void Inventory()
 {
     int inventory_choice;
@@ -71,6 +72,7 @@ void customer_bill()
     //char pos_item[item_name]; 
     //int item_code,item_quantity,item_price;
     int pos_user_choice,total=0;
+    viewInventory();
     printf("\n\tEnter Bill's ID: ");
     scanf("%d",&pos.bill_id);
     printf("\n\tEnter Item's Code: ");
@@ -208,7 +210,8 @@ void addItem()
     struct Product pd;
     //char add_item[item_name];
     //double item_cost,item_quantity,item_price;
-    printf("\n\tInsert New Item's ID: ");
+    viewInventory();
+    printf("\n\n\tInsert New Item's ID: ");
     scanf("%d",&pd.product_id);
     printf("\n\tInsert New Item's Name: ");
     scanf("%s",pd.product_name);
@@ -216,7 +219,7 @@ void addItem()
     scanf("%lf",&pd.product_cost);
     if(pd.product_cost <=0 )
     {
-        printf("\n\tPlease enter the possible cost value.\n");
+        printf("\n\tPlease enter the possible cost value. Retype from the beginning again.\n");
         addItem();
     }
     else{
@@ -224,7 +227,7 @@ void addItem()
         scanf("%d",&pd.product_quantity);
         if(pd.product_quantity <= 0 )
         {
-            printf("\n\tPlease enter the possible quantity value.\n");
+            printf("\n\tPlease enter the possible cost value. Retype from the beginning again.\n");
             addItem();
         }
         else{
@@ -232,7 +235,7 @@ void addItem()
             scanf("%lf",&pd.product_price);
             if(pd.product_price <= 0)
             {
-                printf("\n\tPlease enter the possible quantity value.\n");
+                printf("\n\tPlease enter the possible cost value. Retype from the beginning again.\n");
                 addItem();
             }
             else
@@ -246,6 +249,7 @@ void addItem()
 void updateItem()
 {
     struct Product Inpd;
+    viewInventory();
     //char update_item[item_name];
     //int item_cost,item_quantity,item_price;
     printf("\n\tEnter Item's Code:");
@@ -256,7 +260,7 @@ void updateItem()
     scanf("%lf",&Inpd.product_cost);
     if(Inpd.product_cost <=0)
     {
-        printf("\n\tPlease enter the possible quantity value.\n");
+        printf("\n\tPlease enter the possible cost value. Retype from the beginning again.\n");
         updateItem();
     }
     else{
@@ -264,7 +268,7 @@ void updateItem()
         scanf("%d",&Inpd.product_quantity);
         if(Inpd.product_quantity <= 0 )
         {
-            printf("\n\tPlease enter the possible quantity value.\n");
+            printf("\n\tPlease enter the possible cost value. Retype from the beginning again.\n");
             updateItem();
         }
         else{
@@ -272,7 +276,7 @@ void updateItem()
             scanf("%lf",&Inpd.product_price);
             if(Inpd.product_price <=0 )
             {
-                printf("\n\tPlease enter the possible quantity value.\n");
+                printf("\n\tPlease enter the possible cost value. Retype from the beginning again.\n");
                 updateItem();
             }
             else
@@ -294,6 +298,21 @@ void deleteItem()
     viewItem();
 }
 
+void viewInventory()
+{
+    
+    struct Product *Product_Array;
+    int length;
+    Product_Array = Product_Retrive(&length);
+    printf("\n\n\t\t\t\tLIST OF ITEMS");
+    printf("\n\t===============================================================\n");
+    printf("\tITEM CODE\t  ITEM NAME\t  QTY\t   COST\t    SALE_PRICE");
+    printf("\n\t===============================================================");
+    for(int i=0;i<length;i++){
+        printf("\n\t%d  \t    %s\t   %d\t    %lf\t%lf",Product_Array[i].product_id,Product_Array[i].product_name,Product_Array[i].product_quantity,Product_Array[i].product_cost,Product_Array[i].product_price);
+    }
+    printf("\n\t===============================================================");
+}
 
 
 void viewItem()
