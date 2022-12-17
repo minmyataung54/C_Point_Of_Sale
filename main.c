@@ -79,7 +79,7 @@ void customer_bill()
     scanf("%s",pos.customer_name);
     printf("\n\tEnter Item's Quantity: ");
     scanf("%d",&pos.product_quantity);
-    if(pos.product_quantity < 1)
+    if(pos.product_quantity < 0)
     {
         printf("\n\tPlease enter possible quantity.\n");
         customer_bill();
@@ -214,12 +214,34 @@ void addItem()
     scanf("%s",pd.product_name);
     printf("\n\tInsert New Item's Cost: ");
     scanf("%lf",&pd.product_cost);
-    printf("\n\tInsert the quantity of New Item: ");
-    scanf("%d",&pd.product_quantity);
-    printf("\n\tInsert sale price of New Item: ");
-    scanf("%lf",&pd.product_price);
-    new_Product(pd);
-    viewItem();
+    if(pd.product_cost <=0 )
+    {
+        printf("\n\tPlease enter the possible cost value.\n");
+        addItem();
+    }
+    else{
+        printf("\n\tInsert the quantity of New Item: ");
+        scanf("%d",&pd.product_quantity);
+        if(pd.product_quantity <= 0 )
+        {
+            printf("\n\tPlease enter the possible quantity value.\n");
+            addItem();
+        }
+        else{
+            printf("\n\tInsert sale price of New Item: ");
+            scanf("%lf",&pd.product_price);
+            if(pd.product_price <= 0)
+            {
+                printf("\n\tPlease enter the possible quantity value.\n");
+                addItem();
+            }
+            else
+            {
+                new_Product(pd);
+                viewItem();
+            }
+        }
+    }
 }
 void updateItem()
 {
@@ -232,12 +254,36 @@ void updateItem()
     scanf("%s",Inpd.product_name);
     printf("\n\tEnter Item's Cost:");
     scanf("%lf",&Inpd.product_cost);
-    printf("\n\tEnter the quantity of Item:");
-    scanf("%d",&Inpd.product_quantity);
-    printf("\n\tEnter sale price of Item:");
-    scanf("%lf",&Inpd.product_price);
-    Product_Update(Inpd);
-    viewItem();
+    if(Inpd.product_cost <=0)
+    {
+        printf("\n\tPlease enter the possible quantity value.\n");
+        updateItem();
+    }
+    else{
+        printf("\n\tEnter the quantity of Item:");
+        scanf("%d",&Inpd.product_quantity);
+        if(Inpd.product_quantity <= 0 )
+        {
+            printf("\n\tPlease enter the possible quantity value.\n");
+            updateItem();
+        }
+        else{
+            printf("\n\tEnter sale price of Item:");
+            scanf("%lf",&Inpd.product_price);
+            if(Inpd.product_price <=0 )
+            {
+                printf("\n\tPlease enter the possible quantity value.\n");
+                updateItem();
+            }
+            else
+            {
+                Product_Update(Inpd);
+                viewItem();
+            }    
+        }
+    }
+    
+
 }
 void deleteItem()
 {
