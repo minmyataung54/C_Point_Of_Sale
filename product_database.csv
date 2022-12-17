@@ -6,3 +6,5 @@ Product_ID,Product_Name,Product_Quantity,Product_Cost,Product_Price
 110005,paper,100,5.000000,8.000000
 110006,calculator,150,7.000000,10.000000
 110007,robe,200,5.000000,6.000000
+110008,scissors,100,5.000000,8.000000
+110009,earphone,100,6.000000,9.000000

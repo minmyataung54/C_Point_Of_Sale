@@ -227,7 +227,7 @@ void addItem()
         scanf("%d",&pd.product_quantity);
         if(pd.product_quantity <= 0 )
         {
-            printf("\n\tPlease enter the possible cost value. Retype from the beginning again.\n");
+            printf("\n\tPlease enter the possible quantity value. Retype from the beginning again.\n");
             addItem();
         }
         else{
@@ -235,11 +235,12 @@ void addItem()
             scanf("%lf",&pd.product_price);
             if(pd.product_price <= 0)
             {
-                printf("\n\tPlease enter the possible cost value. Retype from the beginning again.\n");
+                printf("\n\tPlease enter the possible sale price value. Retype from the beginning again.\n");
                 addItem();
             }
             else
             {
+                printf("\n\tItem Insertion is successful.\n");
                 new_Product(pd);
                 viewItem();
             }
@@ -252,11 +253,11 @@ void updateItem()
     viewInventory();
     //char update_item[item_name];
     //int item_cost,item_quantity,item_price;
-    printf("\n\tEnter Item's Code:");
+    printf("\n\tEnter Item's Code: ");
     scanf("%d",&Inpd.product_id);
-    printf("\n\tEnter Item's Name:");
+    printf("\n\tEnter Item's Name: ");
     scanf("%s",Inpd.product_name);
-    printf("\n\tEnter Item's Cost:");
+    printf("\n\tEnter Item's Cost: ");
     scanf("%lf",&Inpd.product_cost);
     if(Inpd.product_cost <=0)
     {
@@ -268,7 +269,7 @@ void updateItem()
         scanf("%d",&Inpd.product_quantity);
         if(Inpd.product_quantity <= 0 )
         {
-            printf("\n\tPlease enter the possible cost value. Retype from the beginning again.\n");
+            printf("\n\tPlease enter the possible quantity value. Retype from the beginning again.\n");
             updateItem();
         }
         else{
@@ -276,11 +277,12 @@ void updateItem()
             scanf("%lf",&Inpd.product_price);
             if(Inpd.product_price <=0 )
             {
-                printf("\n\tPlease enter the possible cost value. Retype from the beginning again.\n");
+                printf("\n\tPlease enter the possible sale price value. Retype from the beginning again.\n");
                 updateItem();
             }
             else
             {
+                printf("\n\t Updating Item is successful.");
                 Product_Update(Inpd);
                 viewItem();
             }    
@@ -294,6 +296,7 @@ void deleteItem()
     int deleteItem_code;
     printf("\n\tEnter the code of item that you want to delete: ");
     scanf("%d",&deleteItem_code);
+    printf("\n\t Item Deletion is successful.");
     Product_Delete(deleteItem_code);
     viewItem();
 }
